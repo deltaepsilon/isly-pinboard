@@ -49,18 +49,30 @@ class IslyPinboard extends WP_Widget
 		}
 		if (!empty($username) && !empty($pinboard)) {
 			$parsedPinboard = $this->getParsedPinboard($instance);
+			$random = uniqid('isly_pinboard_');
 ?>
-        	<script type='text/javascript' src='<?php echo plugins_url('isly-pinboard/scripts/isly-pinboard.js'); ?>'></script>
+        	<script type='text/javascript' src='<?php echo plugins_url('isly-pinboard/scripts/jquery.transit.min.js'); ?>'></script>
+        <script type='text/javascript' src='<?php echo plugins_url('isly-pinboard/scripts/isly-pinboard.js'); ?>'></script>
         	<link rel='stylesheet' href='<?php echo plugins_url('isly-pinboard/styles/isly-pinboard.css'); ?>' type='text/css'/>
 			<script>
 				jQuery(document).ready(function() {
 					return new window.ISLY.IslyPinboard({
+						id: '<?php echo $random; ?>',
 						pinboard: <?php echo json_encode($parsedPinboard); ?>
 					});
 				});
 			</script>
-			<div class="isly-pinboard">
-				<img class="isly-pinboard-placeholder" src="<?php echo plugins_url('isly-pinboard/images/placeholder.png'); ?>" />
+			<div id="<?php echo $random ; ?>" class="isly-pinboard">
+				<div class="cube">
+					<div class="face one"></div>
+					<div class="face two">
+                        <img class="isly-pinboard-placeholder" src="<?php echo plugins_url('isly-pinboard/images/placeholder.png'); ?>" />
+					</div>
+					<div class="face three">three</div>
+					<div class="face four">four</div>
+					<div class="face five">five</div>
+					<div class="face six">six</div>
+				</div>
 			</div>
 <?php
 		} else {

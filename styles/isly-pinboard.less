@@ -1,15 +1,106 @@
-.transform(@attribute: rotate(360deg)) {
-  -moz-transform: @attribute;
-  -webkit-transform: @attribute;
-  -o-transform: @attribute;
-  -ms-transform: @attribute;
-  transform: @attribute;
+.transform(@attribute1: rotate(360deg), @attribute2) {
+  -moz-transform: @attribute1 @attribute2;
+  -webkit-transform: @attribute1 @attribute2;
+  -o-transform: @attribute1 @attribute2;
+  -ms-transform: @attribute1 @attribute2;
+  transform: @attribute1 @attribute2;
+}
+.perspective(@perspective: 800) {
+  -moz-perspective: @perspective;
+  -webkit-perspective: @perspective;
+  -ms-perspective: @perspective;
+  -o-perspective: @perspective;
+  perspective: @perspective;
+}
+.perspective-origin(@origin: 800) {
+  -moz-perspective-origin: @origin;
+  -webkit-perspective-origin: @origin;
+  -ms-perspective-origin: @origin;
+  -o-perspective-origin: @origin;
+  perspective: @origin;
+}
+.absLayout(@top: 0, @right: 0, @bottom: 0, @left: 0) {
+  position: absolute;
+  top: @top;
+  right: @right;
+  bottom: @bottom;
+  left: @left;
 }
 
+.isly-pinboard {
+  .perspective(800);
+  .perspective-origin(50% 200px);
+  background: gold;
+  padding-top: 15%;
+}
 .isly-pinboard-placeholder {
-  display: block;
-  margin: auto;
-  padding: 50% 0;
-
-  .transform(rotate(180deg));
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  visibility: hidden;
 }
+.cube {
+  position: relative;
+  margin: 0 auto;
+  height: 75%;
+  width: 75%;
+
+  -webkit-transition: -webkit-transform 2s linear;
+  -webkit-transform-style: preserve-3d;
+  -moz-transition: -moz-transform 2s linear;
+  -moz-transform-style: preserve-3d;
+  -o-transition: -o-transform 2s linear;
+  -o-transform-style: preserve-3d;
+  -ms-transition: -ms-transform 2s linear;
+  -ms-transform-style: preserve-3d;
+  transition: transform 2s linear;
+  transform-style: preserve-3d;
+}
+.face {
+  height: 100%;
+  width: 100%;
+  background-image: url('../images/placeholder.png');
+  background-repeat: no-repeat;
+  background-color: hsla(0, 0%, 32%, .8);
+  .absLayout();
+  font-size: 2em;
+  color: white;
+  font-weight: bold;
+}
+@translation: translateZ(50px);
+.one {
+  .transform(rotateX(90deg), @translation);
+}
+.two {
+  .transform('', @translation);
+}
+.three {
+  .transform(rotateY(90deg), @translation);
+}
+.four {
+  .transform(rotateY(180deg), @translation);
+}
+.five {
+  .transform(rotateY(-90deg), @translation);
+}
+.six {
+  .transform(rotateX(-90deg), @translation);
+}
+
+//.isly-pinboard-placeholder {
+//  display: block;
+//  margin: auto;
+//  padding: 50% 0;
+//
+//  .transform(rotateY(0deg));
+//}
+//.isly-pinboard-backdrop-top {
+//  background: #dcdcdc;
+//  .absLayout(0, 0, 0, 0);
+////  .transform(rotateX(-45deg));
+//}
+//.isly-pinboard-backdrop-bottom {
+//  background: #000000;
+//  .absLayout(75%, 2%, -3%, 2%);
+//  .transform(rotateX(45deg));
+//}
