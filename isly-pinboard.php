@@ -51,7 +51,7 @@ class IslyPinboard extends WP_Widget
 			$parsedPinboard = $this->getParsedPinboard($instance);
 ?>
         	<script type='text/javascript' src='<?php echo plugins_url('isly-pinboard/scripts/isly-pinboard.js'); ?>'></script>
-        	<link rel='stylesheet' href='<?php echo plugins_url('isly-pinterest/styles/isly-pinterest.css'); ?>' type='text/css'/>
+        	<link rel='stylesheet' href='<?php echo plugins_url('isly-pinboard/styles/isly-pinboard.css'); ?>' type='text/css'/>
 			<script>
 				jQuery(document).ready(function() {
 					return new window.ISLY.IslyPinboard({
@@ -60,7 +60,7 @@ class IslyPinboard extends WP_Widget
 				});
 			</script>
 			<div class="isly-pinboard">
-				<img src="/great-placeholder.jpg" />
+				<img class="isly-pinboard-placeholder" src="<?php echo plugins_url('isly-pinboard/images/placeholder.png'); ?>" />
 			</div>
 <?php
 		} else {

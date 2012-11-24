@@ -1,0 +1,15 @@
+.transform(@attribute: rotate(360deg)) {
+  -moz-transform: @attribute;
+  -webkit-transform: @attribute;
+  -o-transform: @attribute;
+  -ms-transform: @attribute;
+  transform: @attribute;
+}
+
+.isly-pinboard-placeholder {
+  display: block;
+  margin: auto;
+  padding: 50% 0;
+
+  .transform(rotate(180deg));
+}
