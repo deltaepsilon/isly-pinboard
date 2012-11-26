@@ -42,6 +42,7 @@ class IslyPinboard extends WP_Widget
 		$title = apply_filters( 'widget_title', $instance['title'] );
 		$username = $instance['username'];
 		$pinboard = $instance['pinboard'];
+		$transitionTimer = $instance['transitionTimer'];
 
 		echo $before_widget;
 		if (!empty($title)) {
@@ -52,28 +53,21 @@ class IslyPinboard extends WP_Widget
 			$random = uniqid('isly_pinboard_');
 ?>
         	<script type='text/javascript' src='<?php echo plugins_url('isly-pinboard/scripts/jquery.transit.min.js'); ?>'></script>
-        	<script>window.Modernizr || document.write('<script src="<?php echo plugins_url('isly-pinboard/scripts/modernizr.min.js'); ?>"><\/script>')</script>
         	<script type='text/javascript' src='<?php echo plugins_url('isly-pinboard/scripts/isly-pinboard.js'); ?>'></script>
         	<link rel='stylesheet' href='<?php echo plugins_url('isly-pinboard/styles/isly-pinboard.css'); ?>' type='text/css'/>
 			<script>
 				jQuery(document).ready(function() {
 					return new window.ISLY.IslyPinboard({
 						id: '<?php echo $random; ?>',
-						pinboard: <?php echo json_encode($parsedPinboard); ?>
+						pinboard: <?php echo json_encode($parsedPinboard); ?>,
+						transitionTimer: <?php echo $transitionTimer ?>
 					});
 				});
 			</script>
 			<div id="<?php echo $random ; ?>" class="isly-pinboard">
-				<div class="cube">
-					<div class="face one"></div>
-					<div class="face two">
+					<div class="slide placeholder current-slide">
                         <img class="isly-pinboard-placeholder" src="<?php echo plugins_url('isly-pinboard/images/placeholder.png'); ?>" />
 					</div>
-					<div class="face three">three</div>
-					<div class="face four">four</div>
-					<div class="face five">five</div>
-					<div class="face six">six</div>
-				</div>
 			</div>
 <?php
 		} else {
@@ -103,7 +97,7 @@ ISLY;
 				$result[] = array(
 //					'html' => $match,
 					'pinID' => $htmlMatches[1][$key],
-					'image' => $htmlMatches[2][$key],
+					'src' => $htmlMatches[2][$key],
 					'description' => $htmlMatches[3][$key]
 				);
 			}
@@ -127,6 +121,7 @@ ISLY;
 		$instance['title'] = strip_tags($newInstance['title']);
 		$instance['username'] = strip_tags($newInstance['username']);
 		$instance['pinboard'] = strip_tags($newInstance['pinboard']);
+		$instance['transitionTimer'] = max(1000, intval($newInstance['transitionTimer']));
 		$instance['cacheHours'] = max(1, intval($newInstance['cacheHours']));
 		$instance['cacheDate'] = new DateTime('+'.$instance['cacheHours'].' days');
 		unset($instance['cache']);
@@ -148,6 +143,11 @@ ISLY;
 		$pinboard = '';
 		if (isset($instance['pinboard'])) {
 			$pinboard= $instance['pinboard'];
+		}
+
+		$transitionTimer = 4000;
+		if (isset($instance['transitionTimer'])) {
+			$transitionTimer = $instance['transitionTimer'];
 		}
 
 		$cacheHours = 72;
@@ -197,6 +197,20 @@ ISLY;
 						name="<?php echo $this->get_field_name('pinboard') ?>"
 						type="text"
 						value="<?php echo esc_attr($pinboard) ?>"
+						/>
+			</p>
+
+			<p>
+				<label for="<?php echo $this->get_field_id('transitionTimer'); ?>">
+					<?php _e('Milliseconds between image transitions - minimum 1000 millis (1 second)'); ?>
+				</label>
+				<input
+						class="widefat"
+						id="<?php echo $this->get_field_id('transitionTimer'); ?>"
+						name="<?php echo $this->get_field_name('transitionTimer') ?>"
+						type="number"
+						step="1"
+						value="<?php echo esc_attr($transitionTimer) ?>"
 						/>
 			</p>
 

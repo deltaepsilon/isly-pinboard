@@ -1,3 +1,10 @@
+.transition(@property: all, @duration: 300ms, @function: ease, @delay: 0ms ) {
+  -moz-transition: @property @duration @function @delay;
+  -webkit-transition: @property @duration @function @delay;
+  -o-transition: @property @duration @function @delay;
+  -ms-transition: @property @duration @function @delay;
+  transition: @property @duration @function @delay;
+}
 .transform(@attribute1: rotate(360deg), @attribute2) {
   -moz-transform: @attribute1 @attribute2;
   -webkit-transform: @attribute1 @attribute2;
@@ -28,10 +35,11 @@
 }
 
 .isly-pinboard {
-  .perspective(800);
-  .perspective-origin(50% 200px);
-  background: gold;
-  padding-top: 15%;
+  overflow: hidden;
+  position: relative;
+}
+.placeholder {
+  background: none !important;
 }
 .isly-pinboard-placeholder {
   position: absolute;
@@ -39,72 +47,23 @@
   left: 50%;
   visibility: hidden;
 }
-.cube {
-  position: relative;
-  margin: 0 auto;
-  height: 75%;
-  width: 75%;
-
-  -webkit-transition: -webkit-transform 2s linear;
-  -webkit-transform-style: preserve-3d;
-
-  -moz-transition: -moz-transform 2s linear;
-//  -moz-transform-style: preserve-3d;
-
-  -o-transition: -o-transform 2s linear;
-  -o-transform-style: preserve-3d;
-
-  -ms-transition: -ms-transform 2s linear;
-  -ms-transform-style: preserve-3d;
-
-  transition: transform 2s linear;
-  transform-style: preserve-3d;
-}
-.face {
-  height: 100%;
-  width: 100%;
-  background-image: url('../images/placeholder.png');
-  background-repeat: no-repeat;
-  background-color: hsla(0, 0%, 32%, .8);
+.slide {
   .absLayout();
-  font-size: 2em;
-  color: white;
-  font-weight: bold;
+  .transition(all, 1s, ease-in, 100ms);
+  margin-left: 0;
+  background: url('../images/placeholder.png') no-repeat center;
 }
-@translation: translateZ(50px);
-.one {
-  .transform(rotateX(90deg), @translation);
+.next-slide {
+  margin-left: -100%;
+  left: -100%;
 }
-.two {
-  .transform('', @translation);
+.previous-slide {
+  left: 200%;
+  .transition(all, 1s, ease-in, 250ms);
 }
-.three {
-  .transform(rotateY(90deg), @translation);
+.isly-pinboard-image {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
 }
-.four {
-  .transform(rotateY(180deg), @translation);
-}
-.five {
-  .transform(rotateY(-90deg), @translation);
-}
-.six {
-  .transform(rotateX(-90deg), @translation);
-}
-
-//.isly-pinboard-placeholder {
-//  display: block;
-//  margin: auto;
-//  padding: 50% 0;
-//
-//  .transform(rotateY(0deg));
-//}
-//.isly-pinboard-backdrop-top {
-//  background: #dcdcdc;
-//  .absLayout(0, 0, 0, 0);
-////  .transform(rotateX(-45deg));
-//}
-//.isly-pinboard-backdrop-bottom {
-//  background: #000000;
-//  .absLayout(75%, 2%, -3%, 2%);
-//  .transform(rotateX(45deg));
-//}

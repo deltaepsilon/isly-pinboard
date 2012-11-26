@@ -4,51 +4,34 @@ if !window.ISLY
     'IslyPinboard': null
 window.ISLY.IslyPinboard = class IslyPinboard
   constructor: (options) ->
-    @pinboard = options.pinboard
+    @pinboard = options.pinboard.pinboard
     @element = $('#' + options.id)
+    @transitionTimer = options.transitionTimer
     @width = @element.width()
-    @cube = @element.find('.cube')
-    @cubeWidth = @cube.width()
-    @faces = @cube.find('.face')
-#    @sideOne = @cube.find('.one').first()
-#    @sideTwo = @cube.find('.two').first()
-#    @sideThree = @cube.find('.three').first()
-#    @sideFour = @cube.find('.four').first()
-#    @sideFive = @cube.find('.five').first()
-#    @sideSix = @cube.find('.six').first()
-
     @placeholder = @element.find('.isly-pinboard-placeholder')
     @spinning = true;
-    if $.browser.webkit
-      @vendorPrefix = '-webkit-'
-    else if $.browser.mozilla
-      @vendorPrefix = '-moz-'
-    else if $.browser.msie
-      @vendorPrefix = '-m-'
-    else if $.browser.opera
-      @vendorPrefix = '-o-'
-    else
-      @vendorPrefix = ''
+    @looping = true;
+    @timer = 0
 
-    this.build()
-  rotations: [
-    'rotateX(90deg)',
-    '',
-    'rotateY(90deg)',
-    'rotateY(180deg)',
-    'rotateY(-90deg)',
-    'rotateX(-90deg)'
-  ]
+    @build()
   build: () ->
-    that = this
-    transform = @vendorPrefix + 'transform'
-
+#    Randomize the pinboard.  It's just too predictable otherwise
+    @pinboard.sort (a, b) ->
+      (Math.random() > 0.5) ? 1 : -1
     @element.height(@width)
-    this.setTransforms()
-    this.fetchImages()
-    this.spin @placeholder, 5000, ->
-      that.setImages()
-      that.rotateCube()
+    @fetchImages()
+
+#    Spin the placeholder and start the loop
+    @spin @placeholder, 2000, =>
+      @loopImages()
+
+#    Set up events to stop and start the loop if necessary
+    @element.on 'islyPinboardStop', =>
+      @looping = false
+    @element.on 'islyPinboardStart', =>
+      @looping = true
+      clearTimeout(@timer)
+      @loopImages()
 
   spin: (image, millis, callback) ->
     image.css
@@ -59,21 +42,48 @@ window.ISLY.IslyPinboard = class IslyPinboard
       if typeof callback == 'function'
         callback()
 
-  setTransforms: ->
-    i = @faces.length
+  fetchImages: (callback) ->
+    pinboard = @pinboard
+    i = pinboard.length
     while i--
-      this.setTransform @faces[i], @rotations[i]
+      pinboard[i].image = $(new Image())
+      pinboard[i].image.attr 'src', pinboard[i].src
 
-  setTransform: (element, rotation) ->
-    prefixed = @vendorPrefix + 'transform'
-    $(element).css prefixed, rotation + ' translateZ(' + @cubeWidth/2 + 'px)'
+#   Delay callback until the first image is loaded.  That should ensure that no half-loaded images get displayed.
+    pinboard[0].image.load ->
+      if typeof callback == 'function'
+        callback()
 
-  fetchImages: ->
-    #    TODO Loop through @pinboard to create images and begin the cacheing process
-    console.log 'fetching images'
-  setImages: ->
-#    TODO Loop through cached images, assign to cube sides and fade them in.
-    console.log 'setting images'
-  rotateCube: ->
-#    TODO randomly rotate cube
-    console.log 'rotating cube'
+  loopImages: =>
+    if !@looping
+      return
+    previousSlide = @element.find('.previous-slide')
+    currentSlide = @element.find('.current-slide')
+
+#    Shift the first pin off of the front and push it back onto the end.  Maintains order without tracking current array key
+    nextPinboard = @pinboard.shift()
+    @pinboard.push nextPinboard
+
+#    Create next slide with link and image
+    nextSlide = $('<div>').addClass('slide next-slide')
+    nextLink = $('<a>').attr 'href', 'http://pinterest.com/pin/' + nextPinboard.pinID + '/'
+    nextPinboard.image.addClass('isly-pinboard-image').css
+      maxWidth: @width
+      maxHeight: @width
+
+    nextLink.append nextPinboard.image
+    nextSlide.append nextLink
+    @element.prepend nextSlide
+
+#    Center image using the absolute position with negative margin trick. See accompanying CSS.  Swap classes.
+    nextPinboard.image.css
+      marginLeft: -.5 *nextPinboard.image.width()
+      marginTop: -.5 *nextPinboard.image.height()
+    if previousSlide
+      previousSlide.remove()
+    currentSlide.addClass('previous-slide').removeClass('current-slide')
+    nextSlide.removeClass('next-slide').addClass('current-slide')
+
+#    Wait just long enough and start the loop again
+    @timer = setTimeout @loopImages, @transitionTimer
+
