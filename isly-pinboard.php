@@ -52,7 +52,8 @@ class IslyPinboard extends WP_Widget
 			$random = uniqid('isly_pinboard_');
 ?>
         	<script type='text/javascript' src='<?php echo plugins_url('isly-pinboard/scripts/jquery.transit.min.js'); ?>'></script>
-        <script type='text/javascript' src='<?php echo plugins_url('isly-pinboard/scripts/isly-pinboard.js'); ?>'></script>
+        	<script>window.Modernizr || document.write('<script src="<?php echo plugins_url('isly-pinboard/scripts/modernizr.min.js'); ?>"><\/script>')</script>
+        	<script type='text/javascript' src='<?php echo plugins_url('isly-pinboard/scripts/isly-pinboard.js'); ?>'></script>
         	<link rel='stylesheet' href='<?php echo plugins_url('isly-pinboard/styles/isly-pinboard.css'); ?>' type='text/css'/>
 			<script>
 				jQuery(document).ready(function() {
